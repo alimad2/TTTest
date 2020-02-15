@@ -35,10 +35,17 @@ def update_spend(spend_id, sp):
     return spend
 
 
-def get_all():
+def get_all(on, price, date):
     spends = []
-    for spend in Spend.objects:
-        spends.append(spend)
+    if on is not None:
+        for spend in Spend.objects(on=on):
+            spends.append(spend)
+    if price is not None:
+        for spend in Spend.objects(price__gte=price):
+            spends.append(spend)
+    if date is not None:
+        for spend in Spend.objects(date=date):
+            spends.append(spend)
     return spends
 
 
@@ -55,22 +62,3 @@ def delete_spend(spend_id):
     spend.delete()
 
 
-def spend_on(on):
-    spends = []
-    for spend in Spend.objects(on=on):
-        spends.append(spend)
-    return spends
-
-
-def spend_price(price):
-    spends = []
-    for spend in Spend.objects(price__gte=price):
-        spends.append(spend)
-    return spends
-
-
-def spend_date(date):
-    spends = []
-    for spend in Spend.objects(date=date):
-        spends.append(spend)
-    return spends

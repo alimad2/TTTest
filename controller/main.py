@@ -14,7 +14,11 @@ class Spss():
 
 @blue.route('/spends', methods=['GET'])
 def get_all():
-    spends = service.get_all()
+    on = request.args.get('on')
+    price = request.args.get('price')
+    date = request.args.get('date')
+
+    spends = service.get_all(on, price, date)
     spendsJSON = []
     for spend in spends:
         temp = {
@@ -82,50 +86,3 @@ def delete_spend(spend_id):
     if ret == False:
         abort(404)
     return jsonify({'result': True})
-
-
-@blue.route('/spends/on/<string:on>', methods=['GET'])
-def spends_on(on):
-    spends = service.spend_on(on)
-    spendsJSON = []
-    for spend in spends:
-        temp = {
-            'id': spend.id,
-            'date': spend.date,
-            'price': spend.price,
-            'on': spend.on
-        }
-        spendsJSON.append(temp)
-    return jsonify({'spends': spendsJSON})
-
-
-@blue.route('/spends/price/<int:price>', methods=['GET'])
-def spend_price(price):
-    spends = service.spend_price(price)
-    spendsJSON = []
-    for spend in spends:
-        temp = {
-            'id': spend.id,
-            'date': spend.date,
-            'price': spend.price,
-            'on': spend.on
-        }
-        spendsJSON.append(temp)
-    return jsonify({'spends': spendsJSON})
-
-
-@blue.route('/spends/date/<int:year>/<string:month>/<int:day>')
-def spend_date(year, month, day):
-    date = str(day) + " " + month + " " + str(year)
-    print(date)
-    spends = service.spend_date(date)
-    spendsJSON = []
-    for spend in spends:
-        temp = {
-            'id': spend.id,
-            'date': spend.date,
-            'price': spend.price,
-            'on': spend.on
-        }
-        spendsJSON.append(temp)
-    return jsonify({'spends': spendsJSON})
