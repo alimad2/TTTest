@@ -1,4 +1,4 @@
-from rep.mongo import Spend
+from rep.mongo import Spend, Category
 
 
 def find_id():
@@ -11,8 +11,15 @@ def find_id():
 
 def create_spend(spend):
     id = find_id()
-    spend = Spend(id=id, date=spend['date'], price=spend['price'], on=spend['on']).save()
-    return spend
+    flag = False
+    c = spend['category']
+    for category in Category.objects:
+        if category.name == c:
+            flag = True
+    if not flag:
+        return False
+    spends = Spend(id=id, date=spend['date'], price=spend['price'], category=spend['category']).save()
+    return spends
 
 
 def find_spend(spend_id):
@@ -35,16 +42,16 @@ def update_spend(spend_id, sp):
     return spend
 
 
-def get_all(on, price, date):
+def get_all(price, date):
     spends = []
-    if on is not None:
-        for spend in Spend.objects(on=on):
-            spends.append(spend)
     if price is not None:
         for spend in Spend.objects(price__gte=price):
             spends.append(spend)
     if date is not None:
         for spend in Spend.objects(date=date):
+            spends.append(spend)
+    if date is None and price is None:
+        for spend in Spend.objects:
             spends.append(spend)
     return spends
 
@@ -62,3 +69,6 @@ def delete_spend(spend_id):
     spend.delete()
 
 
+def create_category(category):
+    category = Category(name=category['name'], description=category['description']).save()
+    return category
