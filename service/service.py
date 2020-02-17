@@ -1,4 +1,5 @@
 from rep.mongo import Spend, Category
+from mongoengine import *
 
 
 def find_id():
@@ -42,16 +43,26 @@ def update_spend(spend_id, sp):
     return spend
 
 
-def get_all(price, date):
+def get_all(price, date, page, category, per_page):
+    if page is None:
+        page = 1
+    if per_page is None:
+        per_page = 5
+    page = int(page)
+    items_per_page = int(per_page)
+    offset = (page - 1) * items_per_page
     spends = []
     if price is not None:
-        for spend in Spend.objects(price__gte=price):
+        for spend in Spend.objects(price__gte=price).skip(offset).limit(items_per_page):
             spends.append(spend)
     if date is not None:
-        for spend in Spend.objects(date=date):
+        for spend in Spend.objects(date=date).skip(offset).limit(items_per_page):
             spends.append(spend)
-    if date is None and price is None:
-        for spend in Spend.objects:
+    if category is not None:
+        for spend in Spend.objects(category=category).skip(offset).limit(items_per_page):
+            spends.append(spend)
+    if date is None and price is None and category is None:
+        for spend in Spend.objects().skip(offset).limit(items_per_page):
             spends.append(spend)
     return spends
 

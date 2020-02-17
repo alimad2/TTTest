@@ -16,9 +16,13 @@ class Spss():
 def get_all():
     price = request.args.get('price')
     date = request.args.get('date')
+    page = request.args.get('page')
+    per_page = request.args.get('pp')
+    category = request.args.get('category')
 
-    spends = service.get_all(price, date)
+    spends = service.get_all(price, date, page, category, per_page)
     spendsJSON = []
+
     for spend in spends:
         temp = {
             'id': spend.id,

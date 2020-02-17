@@ -1,4 +1,5 @@
 from mongoengine import *
+import jsl
 
 connect('spends')
 
