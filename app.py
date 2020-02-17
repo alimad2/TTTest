@@ -1,13 +1,22 @@
-from flask import Flask
-from controller.main import blue
+from flask import Flask, session
+from flask_login import LoginManager
+from flask_login import login_required, current_user
 
 app = Flask(__name__)
+app.secret_key = 'xxxyyyzzz'
+login_manager = LoginManager(app)
+login_manager.login_view = 'auth.login_get'
+
+from controller.auth import auth
+from controller.main import blue
+
 app.register_blueprint(blue)
+app.register_blueprint(auth)
 
 
 @app.route('/')
-def hello_world():
-    return 'Hello World!'
+def home_page():
+    return 'Home Page!'
 
 
 if __name__ == '__main__':

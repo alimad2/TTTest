@@ -1,4 +1,4 @@
-from rep.mongo import Spend, Category
+from rep.mongo import Spend, Category, User
 from mongoengine import *
 
 
@@ -24,7 +24,7 @@ def create_spend(spend):
 
 
 def find_spend(spend_id):
-    for spend in Spend.objects:
+    for spend in Spend.objects():
         if spend.id == spend_id:
             return spend
 
