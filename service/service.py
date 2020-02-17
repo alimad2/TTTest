@@ -92,10 +92,9 @@ def get_this_spend(username, spend_id):
 
 
 def delete_spend(username, spend_id):
-    owner = find_user(username)
     if not (1 <= spend_id < find_id()):
         return False
-    spend = find_spend(owner, spend_id)
+    spend = find_spend(username, spend_id)
     spend.delete()
 
 
