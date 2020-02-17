@@ -1,6 +1,5 @@
 from flask import Flask, session
 from flask_login import LoginManager
-from flask_login import login_required, current_user
 
 app = Flask(__name__)
 app.secret_key = 'xxxyyyzzz'

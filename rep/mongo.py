@@ -19,8 +19,10 @@ class User(Document, UserMixin):
 
 
 class Category(Document):
-    name = StringField(required=True, min_length=3, max_length=15, primary_key=True)
+    id = StringField(required=True, primary_key=True)
+    name = StringField(required=True, min_length=3, max_length=15)
     description = StringField(max_length=50)
+    owner = ReferenceField(User, reverse_delete_rule=CASCADE)
 
 
 class Spend(Document):

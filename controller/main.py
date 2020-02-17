@@ -1,4 +1,5 @@
 from flask import Blueprint, request, abort, jsonify, url_for
+from flask_login import login_required, current_user
 
 import service.service as service
 
@@ -13,14 +14,16 @@ class Spss():
 
 
 @blue.route('/spends', methods=['GET'])
+@login_required
 def get_all():
     price = request.args.get('price')
     date = request.args.get('date')
     page = request.args.get('page')
     per_page = request.args.get('pp')
     category = request.args.get('category')
+    username = current_user.username
 
-    spends = service.get_all(price, date, page, category, per_page)
+    spends = service.get_all(username, price, date, page, category, per_page)
     spendsJSON = []
 
     for spend in spends:
@@ -36,8 +39,10 @@ def get_all():
 
 
 @blue.route('/spends/<int:spend_id>', methods=['GET'])
+@login_required
 def get_spend(spend_id):
-    spend = service.get_this_spend(spend_id)
+    username = current_user.username
+    spend = service.get_this_spend(username, spend_id)
     if spend == False:
         abort(404)
     spendjson = {
@@ -50,7 +55,9 @@ def get_spend(spend_id):
 
 
 @blue.route('/spends', methods=['POST'])
+@login_required
 def new_spend():
+    username = current_user.username
     if not request.json:
         abort(400)
     spend = {
@@ -58,7 +65,7 @@ def new_spend():
         'price': request.json['price'],
         'category': request.json['category'],
     }
-    spend = service.create_spend(spend)
+    spend = service.create_spend(username, spend)
     if spend == False:
         abort(400)
     spendjson = {
@@ -71,10 +78,12 @@ def new_spend():
 
 
 @blue.route('/spends/<int:spend_id>', methods=['PUT'])
+@login_required
 def update_spend(spend_id):
+    username = current_user.username
     sp = Spss(request.json.get('price', 'nothing'), request.json.get('date', 'nothing'),
               request.json.get('category', 'nothing'))
-    ret = service.update_spend(spend_id, sp)
+    ret = service.update_spend(username, spend_id, sp)
     if ret == False:
         abort(404)
     spend = {
@@ -87,16 +96,20 @@ def update_spend(spend_id):
 
 
 @blue.route('/spends/<int:spend_id>', methods=['DELETE'])
+@login_required
 def delete_spend(spend_id):
-    ret = service.delete_spend(spend_id)
+    username = current_user.username
+    ret = service.delete_spend(username, spend_id)
     if ret == False:
         abort(404)
     return jsonify({'result': True})
 
 
 @blue.route('/categories', methods=['GET'])
+@login_required
 def get_all_categories():
-    categories = service.get_all_categories()
+    username = current_user.username
+    categories = service.get_all_categories(username)
     categoriesJSON = []
     for category in categories:
         temp = {
@@ -108,9 +121,11 @@ def get_all_categories():
 
 
 @blue.route('/categories', methods=['POST'])
+@login_required
 def create_new_category():
     if not request.json:
         abort(400)
+    username = current_user.username
 
     name = request.json.get('name')
     description = request.json.get('description', 'no description')
@@ -118,7 +133,7 @@ def create_new_category():
         'name': name,
         'description': description
     }
-    category = service.create_category(category)
+    category = service.create_category(username, category)
     categoryJSON = {
         'name': category.name,
         'description': category.description
