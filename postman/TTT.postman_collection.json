@@ -6,7 +6,25 @@
 	},
 	"item": [
 		{
-			"name": "http://127.0.0.1:5000/spends",
+			"name": "get all spends",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b9caac9a-58ce-4ea5-9be4-113e87724a4b",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Your test name\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].price).to.eql(500);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -17,6 +35,11 @@
 						"key": "Content-Type",
 						"name": "Content-Type",
 						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODIxMjI1MTUsImlhdCI6MTU4MjExODkxNSwic3ViIjoiYWxpbWFkIn0.Otef6LM3_XbHNH4E_VjglUkxDiA4uTlfCLOZwiUM2Bk",
 						"type": "text"
 					}
 				],
@@ -30,7 +53,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://127.0.0.1:5000/spends",
+					"raw": "http://127.0.0.1:5000/spends?page=2",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -41,13 +64,20 @@
 					"port": "5000",
 					"path": [
 						"spends"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						}
 					]
-				}
+				},
+				"description": "respone with all spends of the user\n?page ----> page number"
 			},
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:5000/spends",
+			"name": "create new spend",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -56,11 +86,16 @@
 						"name": "Content-Type",
 						"value": "application/json",
 						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODIxMjIzMzAsImlhdCI6MTU4MjExODczMCwic3ViIjoiYWxpbWFkIn0.4BCV3YYQw2Gk9LJrndSjHxfdqmkE6j8BiPt0S8IQd2w",
+						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"date\":\"20 Feb 2020\",\n\t\"price\":5676,\n\t\"on\":\"car\"\n}",
+					"raw": "{\n\t\"date\":\"15Feb2020\",\n\t\"price\":1234,\n\t\"category\":\"food\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -80,12 +115,13 @@
 					"path": [
 						"spends"
 					]
-				}
+				},
+				"description": "date, price and category ----> required"
 			},
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:5000/spends/2",
+			"name": "update spend",
 			"request": {
 				"method": "PUT",
 				"header": [
@@ -119,17 +155,24 @@
 						"spends",
 						"2"
 					]
-				}
+				},
+				"description": "at least one of the parameters(date, price, category) must be included in json request"
 			},
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:5000/spends/3",
+			"name": "delete spend",
 			"request": {
 				"method": "DELETE",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODIxMjI1MTUsImlhdCI6MTU4MjExODkxNSwic3ViIjoiYWxpbWFkIn0.Otef6LM3_XbHNH4E_VjglUkxDiA4uTlfCLOZwiUM2Bk",
+						"type": "text"
+					}
+				],
 				"url": {
-					"raw": "http://127.0.0.1:5000/spends/3",
+					"raw": "http://127.0.0.1:5000/spends/9",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -140,14 +183,14 @@
 					"port": "5000",
 					"path": [
 						"spends",
-						"3"
+						"9"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:5000/spends/5",
+			"name": "getspend:id",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -165,17 +208,18 @@
 						"spends",
 						"5"
 					]
-				}
+				},
+				"description": "get spend with id = <int:id>"
 			},
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:5000/spends?on=car",
+			"name": "getallspends?price=500",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:5000/spends?on=car",
+					"raw": "http://127.0.0.1:5000/spends?price=500",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -190,15 +234,31 @@
 					"query": [
 						{
 							"key": "on",
-							"value": "car"
+							"value": "car",
+							"disabled": true
+						},
+						{
+							"key": "date",
+							"value": "15Feb2020",
+							"disabled": true
+						},
+						{
+							"key": "price",
+							"value": "500"
+						},
+						{
+							"key": "price",
+							"value": "500",
+							"disabled": true
 						}
 					]
-				}
+				},
+				"description": "get all spends ++ query string"
 			},
 			"response": []
 		},
 		{
-			"name": "http://127.0.0.1:5000/categories",
+			"name": "create new category",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -211,7 +271,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\":\"car\",\n\t\"description\":\"this is description\"\n}",
+					"raw": "{\n\t\"name\":\"shit\",\n\t\"description\":\"this is description of car category\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -231,7 +291,136 @@
 					"path": [
 						"categories"
 					]
+				},
+				"description": "name ---> required\ndescription ---> optional"
+			},
+			"response": []
+		},
+		{
+			"name": "get all categories",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODIxMjI1MTUsImlhdCI6MTU4MjExODkxNSwic3ViIjoiYWxpbWFkIn0.Otef6LM3_XbHNH4E_VjglUkxDiA4uTlfCLOZwiUM2Bk",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:5000/categories",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"categories"
+					]
+				},
+				"description": "response with all categories that user has made"
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\":\"alimad\",\n\t\"password\":\"emadi\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/login",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"login"
+					]
 				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/logout",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\":\"testtest\",\n\t\"password\":\"testtest\",\n\t\"email\":\"test@gmail.com\",\n\t\"name\":\"test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/register",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"register"
+					]
+				},
+				"description": "username, password, email ----> required, \nname ---> optional"
 			},
 			"response": []
 		}
