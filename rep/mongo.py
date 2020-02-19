@@ -39,7 +39,11 @@ class User(Document):
     def decode_token(auth_token):
         try:
             payload = jwt.decode(auth_token, 'xxxyyyzzz')
-            return payload['sub']
+            blacklisted_query_set = BlackList.objects(token=auth_token)
+            if len(blacklisted_query_set) == 0:
+                return payload['sub']
+            else:
+                return False
         except jwt.ExpiredSignatureError:
             return 'Signature expired. Please log in again.'
         except jwt.InvalidTokenError:
@@ -59,3 +63,8 @@ class Spend(Document):
     price = IntField(required=True)
     category = ReferenceField('Category', reverse_delete_rule=CASCADE, required=True)
     owner = ReferenceField('User', reverse_delete_rule=CASCADE, required=True)
+
+
+class BlackList(Document):
+    token = StringField(required=True)
+    blacklisted_on = DateTimeField(required=True)

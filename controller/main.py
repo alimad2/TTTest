@@ -24,6 +24,8 @@ def get_all():
     per_page = request.args.get('pp')
     category = request.args.get('category')
     username = User.decode_token(request.headers.get('Authorization'))
+    if not username:
+        return jsonify({'message': 'please log in again'})
 
     spends = service.get_all(username, price, date, page, category, per_page)
     spendsJSON = []
@@ -50,6 +52,8 @@ def get_spend(spend_id):
     """
 
     username = User.decode_token(request.headers.get('Authorization'))
+    if not username:
+        return jsonify({'message': 'please log in again'})
     spend = service.get_this_spend(username, spend_id)
     if spend == False:
         abort(404)
@@ -71,6 +75,8 @@ def new_spend():
 
     """
     username = User.decode_token(request.headers.get('Authorization'))
+    if not username:
+        return jsonify({'message': 'please log in again'})
     print("username is " + str(username))
     if not request.json:
         abort(400)
@@ -109,6 +115,8 @@ def update_spend(spend_id):
     except ValidationError:
         return jsonify({'result': 'validation error'})
     username = User.decode_token(request.headers.get('Authorization'))
+    if not username:
+        return jsonify({'message': 'please log in again'})
     price = request.json.get('price', 'nothing')
     date = request.json.get('date', 'nothing')
     category = request.json.get('category', 'nothing')
@@ -134,6 +142,8 @@ def delete_spend(spend_id):
 
     """
     username = User.decode_token(request.headers.get('Authorization'))
+    if not username:
+        return jsonify({'message': 'please log in again'})
     ret = service.delete_spend(username, spend_id)
     if ret == False:
         abort(404)
@@ -149,6 +159,8 @@ def get_all_categories():
 
     """
     username = User.decode_token(request.headers.get('Authorization'))
+    if not username:
+        return jsonify({'message': 'please log in again'})
     categories = service.get_all_categories(username)
     categoriesJSON = []
     for category in categories:
@@ -176,6 +188,8 @@ def create_new_category():
         return jsonify({'result': 'validation error'})
 
     username = User.decode_token(request.headers.get('Authorization'))
+    if not username:
+        return jsonify({'message': 'please log in again'})
     name = request.json.get('name')
     description = request.json.get('description', 'no description')
     category = {

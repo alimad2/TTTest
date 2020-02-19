@@ -4,7 +4,8 @@ from werkzeug.security import generate_password_hash
 
 import service.auth_service as service
 from service.schema import User, LOGIN_ROLE, REGISTER_ROLE
-from rep.mongo import User as us
+from rep.mongo import User as us, BlackList
+import datetime
 
 auth = Blueprint('auth', __name__)
 
@@ -62,8 +63,13 @@ def login_post():
 
 @auth.route('/logout')
 def logout():
-    username = get_username(request.headers.get('Authorization'))
-    return redirect(url_for('home_page'))
+    token = request.headers.get('Authorization')
+    BlackList(token=token, blacklisted_on=datetime.datetime.now()).save()
+    response_object = {
+        'status': 'success',
+        'message': 'successfully logged out'
+    }
+    return make_response(jsonify(response_object)), 200
 
 
 def get_username(header):
