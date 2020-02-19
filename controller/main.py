@@ -11,6 +11,13 @@ blue = Blueprint('test', __name__)
 
 @blue.route('/spends', methods=['GET'])
 def get_all():
+    """
+    @api {get} /spends Request All Spends Information
+    @apiName GetAllSpends
+    @apiGroup Spend
+
+    """
+
     price = request.args.get('price')
     date = request.args.get('date')
     page = request.args.get('page')
@@ -35,6 +42,13 @@ def get_all():
 
 @blue.route('/spends/<int:spend_id>', methods=['GET'])
 def get_spend(spend_id):
+    """
+    @api {get} /spends:id Request Spend Information
+    @apiName GetSpend
+    @apiGroup Spend
+
+    """
+
     username = User.decode_token(request.headers.get('Authorization'))
     spend = service.get_this_spend(username, spend_id)
     if spend == False:
@@ -50,6 +64,12 @@ def get_spend(spend_id):
 
 @blue.route('/spends', methods=['POST'])
 def new_spend():
+    """
+    @api {post} /spends Create New Spend
+    @apiName NewSpend
+    @apiGroup Spend
+
+    """
     username = User.decode_token(request.headers.get('Authorization'))
     print("username is " + str(username))
     if not request.json:
@@ -78,6 +98,12 @@ def new_spend():
 
 @blue.route('/spends/<int:spend_id>', methods=['PUT'])
 def update_spend(spend_id):
+    """
+    @api {put} /spends:id Update The Spend
+    @apiName UpdateSpend
+    @apiGroup Spend
+
+    """
     try:
         validate(instance=request.json, schema=Spend.get_schema(role=MOCK_ROLE))
     except ValidationError:
@@ -101,6 +127,12 @@ def update_spend(spend_id):
 
 @blue.route('/spends/<int:spend_id>', methods=['DELETE'])
 def delete_spend(spend_id):
+    """
+    @api {delete} /spends:id Delete The Spend
+    @apiName DeleteSpend
+    @apiGroup Spend
+
+    """
     username = User.decode_token(request.headers.get('Authorization'))
     ret = service.delete_spend(username, spend_id)
     if ret == False:
@@ -110,6 +142,12 @@ def delete_spend(spend_id):
 
 @blue.route('/categories', methods=['GET'])
 def get_all_categories():
+    """
+    @api {get} /categories Request All Categories Information
+    @apiName GetAllCategories
+    @apiGroup Category
+
+    """
     username = User.decode_token(request.headers.get('Authorization'))
     categories = service.get_all_categories(username)
     categoriesJSON = []
@@ -124,6 +162,12 @@ def get_all_categories():
 
 @blue.route('/categories', methods=['POST'])
 def create_new_category():
+    """
+    @api {post} /categories Creates New Category
+    @apiName NewCategory
+    @apiGroup Category
+
+    """
     if not request.json:
         abort(400)
     try:
@@ -149,14 +193,7 @@ def create_new_category():
 @blue.route("/testing")
 def test():
     auth_header = request.headers.get('Authorization')
-    # print(auth_header)
-    # if auth_header:
-    #     #     auth_token = auth_header.split(" ")[1]
-    #     # else:
-    #     #     auth_token = ''
-    # auth_token = User.decode_token(auth_header)
     resp = User.decode_token(auth_header)
-    # print(resp)
     user = User.objects(username=resp)
     response_object = {
         'status': 'success',
