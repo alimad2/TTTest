@@ -1,4 +1,6 @@
-from flask_login import UserMixin
+import datetime
+
+import jwt
 from mongoengine import *
 
 from app import login_manager
@@ -12,11 +14,36 @@ def load_user(user_id):
     return users[0]
 
 
-class User(Document, UserMixin):
+class User(Document):
     username = StringField(required=True, primary_key=True)
     password = StringField(required=True, min_length=8)
     email = StringField(required=True)
     name = StringField()
+
+    def encode_token(self, username):
+        try:
+            payload = {
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=1, minutes=0, seconds=0),
+                'iat': datetime.datetime.utcnow(),
+                'sub': username
+            }
+            return jwt.encode(
+                payload,
+                'xxxyyyzzz',
+                algorithm='HS256'
+            )
+        except Exception as e:
+            return e
+
+    @staticmethod
+    def decode_token(auth_token):
+        try:
+            payload = jwt.decode(auth_token, 'xxxyyyzzz')
+            return payload['sub']
+        except jwt.ExpiredSignatureError:
+            return 'Signature expired. Please log in again.'
+        except jwt.InvalidTokenError:
+            return 'Invalid token. Please log in again.'
 
 
 class Category(Document):

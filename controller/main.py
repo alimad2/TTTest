@@ -1,29 +1,22 @@
 from flask import Blueprint, request, abort, jsonify, url_for
-from flask_login import login_required, current_user
 from jsonschema import validate, ValidationError
 
 import service.service as service
+from controller.auth import get_username
+from rep.mongo import User
 from service.schema import Spend, Category, CREATE_ROLE, MOCK_ROLE
 
 blue = Blueprint('test', __name__)
 
 
-class Spss():
-    def __init__(self, price, date, category):
-        self.price = price
-        self.date = date
-        self.category = category
-
-
 @blue.route('/spends', methods=['GET'])
-@login_required
 def get_all():
     price = request.args.get('price')
     date = request.args.get('date')
     page = request.args.get('page')
     per_page = request.args.get('pp')
     category = request.args.get('category')
-    username = current_user.username
+    username = User.decode_token(request.headers.get('Authorization'))
 
     spends = service.get_all(username, price, date, page, category, per_page)
     spendsJSON = []
@@ -41,9 +34,8 @@ def get_all():
 
 
 @blue.route('/spends/<int:spend_id>', methods=['GET'])
-@login_required
 def get_spend(spend_id):
-    username = current_user.username
+    username = User.decode_token(request.headers.get('Authorization'))
     spend = service.get_this_spend(username, spend_id)
     if spend == False:
         abort(404)
@@ -57,9 +49,9 @@ def get_spend(spend_id):
 
 
 @blue.route('/spends', methods=['POST'])
-@login_required
 def new_spend():
-    username = current_user.username
+    username = User.decode_token(request.headers.get('Authorization'))
+    print("username is " + str(username))
     if not request.json:
         abort(400)
     try:
@@ -85,16 +77,17 @@ def new_spend():
 
 
 @blue.route('/spends/<int:spend_id>', methods=['PUT'])
-@login_required
 def update_spend(spend_id):
     try:
         validate(instance=request.json, schema=Spend.get_schema(role=MOCK_ROLE))
     except ValidationError:
         return jsonify({'result': 'validation error'})
-    username = current_user.username
-    sp = Spss(request.json.get('price', 'nothing'), request.json.get('date', 'nothing'),
-              request.json.get('category', 'nothing'))
-    ret = service.update_spend(username, spend_id, sp)
+    username = User.decode_token(request.headers.get('Authorization'))
+    price = request.json.get('price', 'nothing')
+    date = request.json.get('date', 'nothing')
+    category = request.json.get('category', 'nothing')
+
+    ret = service.update_spend(username, spend_id, price, date, category)
     if ret == False:
         abort(404)
     spend = {
@@ -107,13 +100,8 @@ def update_spend(spend_id):
 
 
 @blue.route('/spends/<int:spend_id>', methods=['DELETE'])
-@login_required
 def delete_spend(spend_id):
-    try:
-        validate(instance=request.json, schema=Spend.get_schema(role=MOCK_ROLE))
-    except ValidationError:
-        return jsonify({'result': 'validation error'})
-    username = current_user.username
+    username = User.decode_token(request.headers.get('Authorization'))
     ret = service.delete_spend(username, spend_id)
     if ret == False:
         abort(404)
@@ -121,9 +109,8 @@ def delete_spend(spend_id):
 
 
 @blue.route('/categories', methods=['GET'])
-@login_required
 def get_all_categories():
-    username = current_user.username
+    username = User.decode_token(request.headers.get('Authorization'))
     categories = service.get_all_categories(username)
     categoriesJSON = []
     for category in categories:
@@ -136,7 +123,6 @@ def get_all_categories():
 
 
 @blue.route('/categories', methods=['POST'])
-@login_required
 def create_new_category():
     if not request.json:
         abort(400)
@@ -145,7 +131,7 @@ def create_new_category():
     except ValidationError:
         return jsonify({'result': 'validation error'})
 
-    username = current_user.username
+    username = User.decode_token(request.headers.get('Authorization'))
     name = request.json.get('name')
     description = request.json.get('description', 'no description')
     category = {
@@ -158,3 +144,25 @@ def create_new_category():
         'description': category.description
     }
     return jsonify({'category': categoryJSON})
+
+
+@blue.route("/testing")
+def test():
+    auth_header = request.headers.get('Authorization')
+    # print(auth_header)
+    # if auth_header:
+    #     #     auth_token = auth_header.split(" ")[1]
+    #     # else:
+    #     #     auth_token = ''
+    # auth_token = User.decode_token(auth_header)
+    resp = User.decode_token(auth_header)
+    # print(resp)
+    user = User.objects(username=resp)
+    response_object = {
+        'status': 'success',
+        'data': {
+            'username': get_username(auth_header),
+            'email': user[0].email,
+        }
+    }
+    return jsonify(response_object)

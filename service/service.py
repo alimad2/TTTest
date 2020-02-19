@@ -1,6 +1,6 @@
-from rep.mongo import Spend, Category, User
-from mongoengine import *
 from mongoengine.queryset.visitor import Q
+
+from rep.mongo import Spend, Category, User
 
 
 def find_user(username):
@@ -45,23 +45,22 @@ def find_spend(username, spend_id):
             return spend
 
 
-def update_spend(username, spend_id, sp):
+def update_spend(username, spend_id, price, date, category):
     if not (1 <= spend_id < find_id()):
         return False
     spend = find_spend(username, spend_id)
-    if sp.price != 'nothing':
-        spend.price = sp.price
-    if sp.date != 'nothing':
-        spend.date = sp.date
-    if sp.on != 'nothing':
-        spend.on = sp.on
+    if price != 'nothing':
+        spend.price = price
+    if date != 'nothing':
+        spend.date = date
+    if category != 'nothing':
+        spend.category = category
     spend.save()
     return spend
 
 
 def get_all(username, price, date, page, category, per_page):
     owner = find_user(username)
-    category = find_category(username, category)
     if page is None:
         page = 1
     if per_page is None:
@@ -77,7 +76,8 @@ def get_all(username, price, date, page, category, per_page):
         for spend in Spend.objects(Q(owner=owner) & Q(date=date)).skip(offset).limit(items_per_page):
             spends.append(spend)
     if category is not None:
-        for spend in Spend.objects(Q(owner=owner) & Q(category=category)).skip(offset).limit(items_per_page):
+        categoryy = find_category(username, category)
+        for spend in Spend.objects(Q(owner=owner) & Q(category=categoryy)).skip(offset).limit(items_per_page):
             spends.append(spend)
     if date is None and price is None and category is None:
         for spend in Spend.objects(owner=owner).skip(offset).limit(items_per_page):

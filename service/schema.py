@@ -14,8 +14,9 @@ true_if_register = jsl.Var({
 
 class User(jsl.Document):
     username = jsl.StringField(required=True)
-    password = jsl.StringField(required=True, min_length=8)
+    password = jsl.StringField(required=True)
     email = jsl.StringField(required=true_if_register)
+    name = jsl.StringField()
 
 
 class Category(jsl.Document):
@@ -26,4 +27,4 @@ class Category(jsl.Document):
 class Spend(jsl.Document):
     date = jsl.StringField(required=true_if_create)
     price = jsl.IntField(required=true_if_create)
-    category = jsl.StringField(required=true_if_create, min_length=3)
+    category = jsl.StringField(required=true_if_create)
