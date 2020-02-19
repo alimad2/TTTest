@@ -1,6 +1,8 @@
-from flask import Blueprint, request, abort, jsonify, url_for, redirect
+from flask import Blueprint, request, jsonify, url_for, redirect
 from flask_login import logout_user, login_required
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
+from jsonschema import validate, ValidationError
+from service.schema import User, LOGIN_ROLE, REGISTER_ROLE
 
 import service.auth_service as service
 
@@ -14,6 +16,11 @@ def register_get():
 
 @auth.route('/register', methods=['POST'])
 def register_post():
+    try:
+        validate(instance=request.json, schema=User.get_schema(role=REGISTER_ROLE))
+    except ValidationError:
+        return jsonify({'result': 'validation error'})
+
     username = request.json.get('username')
     password = request.json.get('password')
     email = request.json.get('email')
@@ -37,6 +44,11 @@ def login_get():
 
 @auth.route('/login', methods=['POST'])
 def login_post():
+    try:
+        validate(instance=request.json, schema=User.get_schema(role=LOGIN_ROLE))
+    except ValidationError:
+        return jsonify({'result': 'validation error'})
+
     username = request.json.get('username')
     password = request.json.get('password')
 

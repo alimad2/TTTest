@@ -1,7 +1,9 @@
 from flask import Blueprint, request, abort, jsonify, url_for
 from flask_login import login_required, current_user
+from jsonschema import validate, ValidationError
 
 import service.service as service
+from service.schema import Spend, Category, CREATE_ROLE, MOCK_ROLE
 
 blue = Blueprint('test', __name__)
 
@@ -60,6 +62,11 @@ def new_spend():
     username = current_user.username
     if not request.json:
         abort(400)
+    try:
+        validate(instance=request.json, schema=Spend.get_schema(role=CREATE_ROLE))
+    except ValidationError:
+        return jsonify({'result': 'validation error'})
+
     spend = {
         'date': request.json['date'],
         'price': request.json['price'],
@@ -80,6 +87,10 @@ def new_spend():
 @blue.route('/spends/<int:spend_id>', methods=['PUT'])
 @login_required
 def update_spend(spend_id):
+    try:
+        validate(instance=request.json, schema=Spend.get_schema(role=MOCK_ROLE))
+    except ValidationError:
+        return jsonify({'result': 'validation error'})
     username = current_user.username
     sp = Spss(request.json.get('price', 'nothing'), request.json.get('date', 'nothing'),
               request.json.get('category', 'nothing'))
@@ -98,6 +109,10 @@ def update_spend(spend_id):
 @blue.route('/spends/<int:spend_id>', methods=['DELETE'])
 @login_required
 def delete_spend(spend_id):
+    try:
+        validate(instance=request.json, schema=Spend.get_schema(role=MOCK_ROLE))
+    except ValidationError:
+        return jsonify({'result': 'validation error'})
     username = current_user.username
     ret = service.delete_spend(username, spend_id)
     if ret == False:
@@ -125,8 +140,12 @@ def get_all_categories():
 def create_new_category():
     if not request.json:
         abort(400)
-    username = current_user.username
+    try:
+        validate(instance=request.json, schema=Category.get_schema())
+    except ValidationError:
+        return jsonify({'result': 'validation error'})
 
+    username = current_user.username
     name = request.json.get('name')
     description = request.json.get('description', 'no description')
     category = {

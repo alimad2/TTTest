@@ -27,6 +27,6 @@ def log_user_in(username, password):
     if user_already_exists(username, 'junk'):
         user = find_user(username)
         if check_password_hash(user.password, password):
-            login_user(user, remember=True)
+            login_user(user, remember=False)
             return True
     return False

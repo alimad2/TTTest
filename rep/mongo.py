@@ -1,5 +1,6 @@
-from mongoengine import *
 from flask_login import UserMixin
+from mongoengine import *
+
 from app import login_manager
 
 connect('spends')
@@ -19,15 +20,15 @@ class User(Document, UserMixin):
 
 
 class Category(Document):
-    id = StringField(required=True, primary_key=True)
+    id = StringField(primary_key=True)
     name = StringField(required=True, min_length=3, max_length=15)
-    description = StringField(max_length=50)
-    owner = ReferenceField(User, reverse_delete_rule=CASCADE)
+    description = StringField(max_length=50, required=True)
+    owner = ReferenceField('User', reverse_delete_rule=CASCADE, required=True)
 
 
 class Spend(Document):
-    id = IntField(required=True, primary_key=True)
+    id = IntField(primary_key=True)
     date = StringField(required=True)
     price = IntField(required=True)
-    category = ReferenceField(Category, reverse_delete_rule=CASCADE)
-    owner = ReferenceField(User, reverse_delete_rule=CASCADE)
+    category = ReferenceField('Category', reverse_delete_rule=CASCADE, required=True)
+    owner = ReferenceField('User', reverse_delete_rule=CASCADE, required=True)
