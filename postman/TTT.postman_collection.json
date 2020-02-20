@@ -16,10 +16,7 @@
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
 							"});",
-							"pm.test(\"Your test name\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData[0].price).to.eql(500);",
-							"});"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -35,11 +32,12 @@
 						"key": "Content-Type",
 						"name": "Content-Type",
 						"value": "application/json",
-						"type": "text"
+						"type": "text",
+						"disabled": true
 					},
 					{
 						"key": "Authorization",
-						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODIxMjI1MTUsImlhdCI6MTU4MjExODkxNSwic3ViIjoiYWxpbWFkIn0.Otef6LM3_XbHNH4E_VjglUkxDiA4uTlfCLOZwiUM2Bk",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODIyMDMwNjYsImlhdCI6MTU4MjE5OTQ2Niwic3ViIjoiYWxpbWFkIn0.ZcHikXJcWe0BJdQmOvz_1wl8EW8CCwF-Ynxg12PP7dA",
 						"type": "text"
 					}
 				],
@@ -53,7 +51,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://127.0.0.1:5000/spends?page=2",
+					"raw": "http://127.0.0.1:5000/spends?",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -68,7 +66,8 @@
 					"query": [
 						{
 							"key": "page",
-							"value": "2"
+							"value": "2",
+							"disabled": true
 						}
 					]
 				},
@@ -78,6 +77,20 @@
 		},
 		{
 			"name": "create new spend",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0baef402-88ea-4afb-b0ba-b4fba7f51148",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -89,13 +102,13 @@
 					},
 					{
 						"key": "Authorization",
-						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODIxMjIzMzAsImlhdCI6MTU4MjExODczMCwic3ViIjoiYWxpbWFkIn0.4BCV3YYQw2Gk9LJrndSjHxfdqmkE6j8BiPt0S8IQd2w",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODIyMDI2MDMsImlhdCI6MTU4MjE5OTAwMywic3ViIjoiYWxpbWFkIn0.JXfvoqkgZqbi_O522c2fKuLWxpz-xaOfpmlj17L8vVI",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"date\":\"15Feb2020\",\n\t\"price\":1234,\n\t\"category\":\"food\"\n}",
+					"raw": "{\n\t\"date\":\"1Feb2020\",\n\t\"price\":25,\n\t\"category\":\"food\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -122,6 +135,20 @@
 		},
 		{
 			"name": "update spend",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d2ebdf87-783b-44fc-800c-b20640470ea7",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "PUT",
 				"header": [
@@ -130,11 +157,16 @@
 						"name": "Content-Type",
 						"value": "application/json",
 						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODIyMDMwNjYsImlhdCI6MTU4MjE5OTQ2Niwic3ViIjoiYWxpbWFkIn0.ZcHikXJcWe0BJdQmOvz_1wl8EW8CCwF-Ynxg12PP7dA",
+						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"date\":\"14 Feb 2020\",\n\t\"price\":500\n}",
+					"raw": "{\n\t\"date\":\"2 Feb 2020\",\n\t\"category\":\"car\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -142,7 +174,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://127.0.0.1:5000/spends/2",
+					"raw": "http://127.0.0.1:5000/spends/12",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -153,7 +185,7 @@
 					"port": "5000",
 					"path": [
 						"spends",
-						"2"
+						"12"
 					]
 				},
 				"description": "at least one of the parameters(date, price, category) must be included in json request"
@@ -162,17 +194,31 @@
 		},
 		{
 			"name": "delete spend",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1486ca5a-fde8-4ff8-a8b6-15bd2a9fed92",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "DELETE",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODIxMjI1MTUsImlhdCI6MTU4MjExODkxNSwic3ViIjoiYWxpbWFkIn0.Otef6LM3_XbHNH4E_VjglUkxDiA4uTlfCLOZwiUM2Bk",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODIyMDI2MDMsImlhdCI6MTU4MjE5OTAwMywic3ViIjoiYWxpbWFkIn0.JXfvoqkgZqbi_O522c2fKuLWxpz-xaOfpmlj17L8vVI",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "http://127.0.0.1:5000/spends/9",
+					"raw": "http://127.0.0.1:5000/spends/11",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -183,7 +229,7 @@
 					"port": "5000",
 					"path": [
 						"spends",
-						"9"
+						"11"
 					]
 				}
 			},
@@ -191,9 +237,29 @@
 		},
 		{
 			"name": "getspend:id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "20d70c16-ea34-4640-a2b6-aeb29e99b7b1",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODIyMDI2MDMsImlhdCI6MTU4MjE5OTAwMywic3ViIjoiYWxpbWFkIn0.JXfvoqkgZqbi_O522c2fKuLWxpz-xaOfpmlj17L8vVI",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "http://127.0.0.1:5000/spends/5",
 					"protocol": "http",
@@ -215,11 +281,31 @@
 		},
 		{
 			"name": "getallspends?price=500",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "08cb25e9-62a9-4501-bc28-33240f2b2901",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODIyMDI2MDMsImlhdCI6MTU4MjE5OTAwMywic3ViIjoiYWxpbWFkIn0.JXfvoqkgZqbi_O522c2fKuLWxpz-xaOfpmlj17L8vVI",
+						"type": "text"
+					}
+				],
 				"url": {
-					"raw": "http://127.0.0.1:5000/spends?price=500",
+					"raw": "http://127.0.0.1:5000/spends?category=car",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -233,9 +319,8 @@
 					],
 					"query": [
 						{
-							"key": "on",
-							"value": "car",
-							"disabled": true
+							"key": "category",
+							"value": "car"
 						},
 						{
 							"key": "date",
@@ -244,7 +329,8 @@
 						},
 						{
 							"key": "price",
-							"value": "500"
+							"value": "500",
+							"disabled": true
 						},
 						{
 							"key": "price",
@@ -259,6 +345,20 @@
 		},
 		{
 			"name": "create new category",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1391fed2-9122-4166-b61d-bbeab2ed97d6",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -267,11 +367,16 @@
 						"name": "Content-Type",
 						"value": "application/json",
 						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODIyMDI2MDMsImlhdCI6MTU4MjE5OTAwMywic3ViIjoiYWxpbWFkIn0.JXfvoqkgZqbi_O522c2fKuLWxpz-xaOfpmlj17L8vVI",
+						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\":\"shit\",\n\t\"description\":\"this is description of car category\"\n}",
+					"raw": "{\n\t\"name\":\"huh\",\n\t\"description\":\"this is description of huh category\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -303,7 +408,7 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODIxMjI1MTUsImlhdCI6MTU4MjExODkxNSwic3ViIjoiYWxpbWFkIn0.Otef6LM3_XbHNH4E_VjglUkxDiA4uTlfCLOZwiUM2Bk",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODIyMDI2MDMsImlhdCI6MTU4MjE5OTAwMywic3ViIjoiYWxpbWFkIn0.JXfvoqkgZqbi_O522c2fKuLWxpz-xaOfpmlj17L8vVI",
 						"type": "text"
 					}
 				],
@@ -327,6 +432,20 @@
 		},
 		{
 			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1207d362-fb7d-49e6-9ce6-261261f802d2",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -365,9 +484,29 @@
 		},
 		{
 			"name": "logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9a12f79c-f7e4-4941-aba9-b9bbe6c1f555",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODIyMDI2MDMsImlhdCI6MTU4MjE5OTAwMywic3ViIjoiYWxpbWFkIn0.JXfvoqkgZqbi_O522c2fKuLWxpz-xaOfpmlj17L8vVI",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "http://127.0.0.1:5000/logout",
 					"protocol": "http",
@@ -387,6 +526,20 @@
 		},
 		{
 			"name": "register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c9805ab7-8d9e-439f-8114-a12b409e4eca",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -399,7 +552,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\":\"testtest\",\n\t\"password\":\"testtest\",\n\t\"email\":\"test@gmail.com\",\n\t\"name\":\"test\"\n}",
+					"raw": "{\n\t\"username\":\"thisistest\",\n\t\"password\":\"testtest\",\n\t\"email\":\"test2222@gmail.com\",\n\t\"name\":\"test\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"

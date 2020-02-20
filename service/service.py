@@ -54,7 +54,8 @@ def update_spend(username, spend_id, price, date, category):
     if date != 'nothing':
         spend.date = date
     if category != 'nothing':
-        spend.category = category
+        categoryy = find_category(username, category)
+        spend.category = categoryy
     spend.save()
     return spend
 
@@ -95,7 +96,11 @@ def delete_spend(username, spend_id):
     if not (1 <= spend_id < find_id()):
         return False
     spend = find_spend(username, spend_id)
-    spend.delete()
+    try:
+        spend.delete()
+    except:
+        spend = False
+        return spend
 
 
 def create_category(username, category):

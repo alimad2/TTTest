@@ -3,15 +3,10 @@ import datetime
 import jwt
 from mongoengine import *
 
-from app import login_manager
 
 connect('spends')
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    users = User.objects(username=user_id)
-    return users[0]
 
 
 class User(Document):
